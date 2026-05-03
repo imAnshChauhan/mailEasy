@@ -318,12 +318,12 @@
   // ==================================================
   // ADD YOUR REAL EMAILJS CREDENTIALS BELOW
   // ==================================================
-   const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
-  const EMAILJS_SERVICE_ID = "service_u23y3pm";
-  const EMAILJS_TEMPLATE_ID = "template_ut57u3m";
+  const EMAILJS_PUBLIC_KEY = "EtyrLWfgiJVvPUgXD";
+  const EMAILJS_SERVICE_ID = "service_2n9dvej";
+  const EMAILJS_TEMPLATE_ID = "template_x5r2qtl";
   
 
-  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });({ publicKey: EMAILJS_PUBLIC_KEY });
 
   const fileInput = document.getElementById("fileInput");
   const fileList = document.getElementById("fileList");
@@ -458,7 +458,8 @@
 
     } catch (err) {
       statusEl.style.color = "#ff4d4d";
-      statusEl.textContent = err.message || "Failed to send email.";
+      console.error('Email Error:', err);
+      statusEl.textContent = "Failed to send email. Check EmailJS keys or template.";
       console.error(err);
     }
 
@@ -471,3 +472,4 @@
 
 </body>
 </html>
+
