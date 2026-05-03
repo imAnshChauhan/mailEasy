@@ -290,10 +290,16 @@
 </div>
 
 <script>
+  // Auto download route for email links
+  const pageParams = new URLSearchParams(window.location.search);
+  const downloadTarget = pageParams.get("download");
+  if (downloadTarget) {
+    window.location.href = decodeURIComponent(downloadTarget);
+  }
   // ==================================================
   // ADD YOUR REAL EMAILJS CREDENTIALS BELOW
   // ==================================================
- const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
+  const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
   const EMAILJS_SERVICE_ID = "service_u23y3pm";
   const EMAILJS_TEMPLATE_ID = "template_ut57u3m";
   const CLOUDINARY_CLOUD_NAME = "dpfjkkaaa";
@@ -426,7 +432,8 @@
 
           if (uploadData.secure_url) {
             const directDownloadUrl = uploadData.secure_url.replace('/upload/', '/upload/fl_attachment/');
-           uploadedLinks.push(`${file.name}: ${directDownloadUrl}`);
+            const siteDownloadUrl = `${window.location.origin}${window.location.pathname}?download=${encodeURIComponent(directDownloadUrl)}`;
+            uploadedLinks.push(`${file.name}: ${siteDownloadUrl}`);
           }
         }
       }
