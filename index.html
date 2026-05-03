@@ -293,17 +293,36 @@
   // Auto download route for email links
   const pageParams = new URLSearchParams(window.location.search);
   const downloadTarget = pageParams.get("download");
+  const fileNameParam = pageParams.get("name");
+
   if (downloadTarget) {
-    window.location.href = decodeURIComponent(downloadTarget);
+    (async () => {
+      try {
+        const response = await fetch(decodeURIComponent(downloadTarget));
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = fileNameParam || "download";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+      } catch (e) {
+        console.error("Download failed", e);
+      }
+    })();
   }
   // ==================================================
   // ADD YOUR REAL EMAILJS CREDENTIALS BELOW
   // ==================================================
-  const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
+   const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
   const EMAILJS_SERVICE_ID = "service_u23y3pm";
   const EMAILJS_TEMPLATE_ID = "template_ut57u3m";
-  const CLOUDINARY_CLOUD_NAME = "dpfjkkaaa";
-  const CLOUDINARY_UPLOAD_PRESET = "mail_files"
+  const CLOUDINARY_CLOUD_NAME = "dc7fgc9xh";
+  const CLOUDINARY_UPLOAD_PRESET = "easy_mail"
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -432,7 +451,7 @@
 
           if (uploadData.secure_url) {
             const directDownloadUrl = uploadData.secure_url.replace('/upload/', '/upload/fl_attachment/');
-            const siteDownloadUrl = `${window.location.origin}${window.location.pathname}?download=${encodeURIComponent(directDownloadUrl)}`;
+            const siteDownloadUrl = `${window.location.origin}${window.location.pathname}?download=${encodeURIComponent(directDownloadUrl)}&name=${encodeURIComponent(file.name)}`;
             uploadedLinks.push(`${file.name}: ${siteDownloadUrl}`);
           }
         }
