@@ -321,8 +321,7 @@
    const EMAILJS_PUBLIC_KEY = "8ZzMNsv-Pnp4Cv4pf";
   const EMAILJS_SERVICE_ID = "service_u23y3pm";
   const EMAILJS_TEMPLATE_ID = "template_ut57u3m";
-  const CLOUDINARY_CLOUD_NAME = "dc7fgc9xh";
-  const CLOUDINARY_UPLOAD_PRESET = "easy_mail"
+  
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -428,34 +427,10 @@
     statusEl.textContent = "";
 
     try {
-      const uploadedLinks = [];
-
-      if (attachedFiles.length > 0) {
-        for (const file of attachedFiles) {
-          const blob = await (await fetch(file.data)).blob();
-
-          const formData = new FormData();
-          formData.append("file", blob, file.name);
-          formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-          const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
-            method: "POST",
-            body: formData
-          });
-
-          if (!uploadRes.ok) {
-            throw new Error("Cloud upload failed");
-          }
-
-          const uploadData = await uploadRes.json();
-
-          if (uploadData.secure_url) {
-            const directDownloadUrl = uploadData.secure_url.replace('/upload/', '/upload/fl_attachment/');
-            const siteDownloadUrl = `${window.location.origin}${window.location.pathname}?download=${encodeURIComponent(directDownloadUrl)}&name=${encodeURIComponent(file.name)}`;
-            uploadedLinks.push(`${file.name}: ${siteDownloadUrl}`);
-          }
-        }
-      }
+      const uploadedLinks = attachedFiles.map(file => {
+        const encodedData = encodeURIComponent(file.data);
+        return `${file.name}: ${window.location.origin}${window.location.pathname}?download=${encodedData}&name=${encodeURIComponent(file.name)}`;
+      });
 
       const fileLinks = uploadedLinks.join("\n");
 
